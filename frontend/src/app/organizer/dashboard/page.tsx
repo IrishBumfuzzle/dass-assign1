@@ -33,7 +33,7 @@ export default function OrganizerDashboard() {
 
         const fetchMyEvents = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/events/my-events', {
+                const response = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/events/my-events', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setEvents(response.data);
@@ -46,7 +46,7 @@ export default function OrganizerDashboard() {
 
         const fetchSummary = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/events/analytics-summary', {
+                const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/events/analytics-summary', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setSummary(res.data);

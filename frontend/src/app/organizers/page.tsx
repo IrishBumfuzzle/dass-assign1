@@ -17,13 +17,13 @@ export default function OrganizersListPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/users/organizers');
+                const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/organizers');
                 setOrganizers(res.data);
 
                 // If logged in, fetch current profile to see followed
                 const token = localStorage.getItem('token');
                 if (token) {
-                    const profileRes = await axios.get('http://localhost:5000/api/users/profile', {
+                    const profileRes = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     setFollowed(profileRes.data.followedOrganizers || []);
@@ -48,7 +48,7 @@ export default function OrganizersListPage() {
             const isFollowing = followed.includes(id);
             setFollowed(prev => isFollowing ? prev.filter(fid => fid !== id) : [...prev, id]);
 
-            await axios.put(`http://localhost:5000/api/users/follow/${id}`, {}, {
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/follow/${id}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
         } catch (error) {

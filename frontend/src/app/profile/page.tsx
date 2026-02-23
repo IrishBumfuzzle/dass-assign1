@@ -34,7 +34,7 @@ export default function ProfilePage() {
             const token = localStorage.getItem('token');
             if (!token) return;
             try {
-                const res = await axios.get('http://localhost:5000/api/users/profile', {
+                const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUser(res.data);
@@ -49,7 +49,7 @@ export default function ProfilePage() {
                 setFollowedOrganizers(res.data.followedOrganizers || []);
 
                 // Fetch all organizers for the follow list
-                const orgRes = await axios.get('http://localhost:5000/api/users/organizers');
+                const orgRes = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/organizers');
                 setAllOrganizers(orgRes.data);
             } catch (error) {
                 console.error("Failed to fetch profile");
@@ -74,12 +74,12 @@ export default function ProfilePage() {
 
         try {
             if (isFollowing) {
-                await axios.put(`http://localhost:5000/api/users/unfollow/${orgId}`, {}, {
+                await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/unfollow/${orgId}`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setFollowedOrganizers(followedOrganizers.filter(id => id !== orgId));
             } else {
-                await axios.put(`http://localhost:5000/api/users/follow/${orgId}`, {}, {
+                await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/follow/${orgId}`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setFollowedOrganizers([...followedOrganizers, orgId]);
@@ -106,7 +106,7 @@ export default function ProfilePage() {
                 payload.password = formData.password;
             }
 
-            await axios.put('http://localhost:5000/api/users/profile', payload, {
+            await axios.put((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', payload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMsg({ type: 'success', content: 'Profile updated successfully' });

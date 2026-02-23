@@ -42,7 +42,7 @@ export default function Dashboard() {
 
         const fetchTickets = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/tickets/my-tickets', {
+                const response = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/tickets/my-tickets', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setTickets(response.data);

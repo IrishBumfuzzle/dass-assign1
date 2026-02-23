@@ -22,7 +22,7 @@ export default function OrganizerDetailPage() {
         const fetchData = async () => {
             try {
                 // Fetch Organizer Details
-                const orgRes = await axios.get(`http://localhost:5000/api/users/organizers/${id}`);
+                const orgRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/organizers/${id}`);
                 setOrganizer(orgRes.data);
 
                 // Fetch Organizer's Events (Searching by keyword logic or new route? Using search keyword for now as fuzzy match)
@@ -31,7 +31,7 @@ export default function OrganizerDetailPage() {
                 // OR better, create GET /api/events?organizerId=... 
                 // Let's rely on string match from existing or just fetch all and filter client side (not performant but works for small app)
                 // Actually, let's just fetch all and filter in frontend for simplicity given constraints
-                const eventsRes = await axios.get('http://localhost:5000/api/events');
+                const eventsRes = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/events');
                 const orgEvents = eventsRes.data.filter((e: any) => e.organizerId._id === id || e.organizerId === id);
                 setEvents(orgEvents);
 

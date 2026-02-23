@@ -4,7 +4,7 @@ import { Box, Typography, Card, CardContent, Grid, Button, Dialog, DialogTitle, 
 import axios from 'axios';
 import io from 'socket.io-client';
 
-const socket = io("http://localhost:5000");
+const socket = io((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + "");
 
 export default function TeamsTab() {
     const [teams, setTeams] = useState<any[]>([]);
@@ -58,7 +58,7 @@ export default function TeamsTab() {
     const fetchTeams = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.get('http://localhost:5000/api/teams/my-teams', {
+            const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/teams/my-teams', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setTeams(res.data);
@@ -76,7 +76,7 @@ export default function TeamsTab() {
 
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.get(`http://localhost:5000/api/teams/${team._id}/chat`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/teams/${team._id}/chat`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessages(res.data);

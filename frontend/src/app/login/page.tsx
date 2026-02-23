@@ -27,7 +27,7 @@ export default function LoginPage() {
     const handleResetSubmit = async () => {
         setResetStatus({ loading: true, error: '', success: '' });
         try {
-            await axios.post('http://localhost:5000/api/auth/password-reset', resetData);
+            await axios.post((process.env.NEXT_PUBLIC_API_URL || '') + '/api/auth/password-reset', resetData);
             setResetStatus({ loading: false, error: '', success: 'Password reset request submitted successfully. Contact Admin.' });
             setTimeout(() => setResetOpen(false), 3000);
         } catch (err: any) {
@@ -51,7 +51,7 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { ...credentials, captcha: captchaToken });
+            const res = await axios.post((process.env.NEXT_PUBLIC_API_URL || '') + '/api/auth/login', { ...credentials, captcha: captchaToken });
             const { token, role, _id, name, email } = res.data;
 
             // Store token and user info

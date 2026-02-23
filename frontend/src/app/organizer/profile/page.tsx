@@ -23,7 +23,7 @@ export default function OrganizerProfilePage() {
             const token = localStorage.getItem('token');
             if (!token) return;
             try {
-                const res = await axios.get('http://localhost:5000/api/users/profile', {
+                const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUser(res.data);
@@ -48,7 +48,7 @@ export default function OrganizerProfilePage() {
         setSaving(true);
         const token = localStorage.getItem('token');
         try {
-            await axios.put('http://localhost:5000/api/users/profile', formData, {
+            await axios.put((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMsg({ type: 'success', content: 'Profile updated successfully' });

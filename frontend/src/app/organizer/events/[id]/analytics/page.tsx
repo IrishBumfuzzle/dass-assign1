@@ -33,10 +33,10 @@ export default function EventAnalytics() {
     const fetchAnalytics = async (search?: string) => {
         const token = localStorage.getItem('token');
         try {
-            const eventRes = await axios.get(`http://localhost:5000/api/events/${id}`);
+            const eventRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/events/${id}`);
             setEventDetails(eventRes.data);
 
-            let url = `http://localhost:5000/api/tickets/event/${id}`;
+            let url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/tickets/event/${id}`;
             if (search) url += `?search=${search}`;
 
             const res = await axios.get(url, {
@@ -94,7 +94,7 @@ export default function EventAnalytics() {
     const handleResolvePayment = async (ticketId: string, status: string) => {
         const token = localStorage.getItem('token');
         try {
-            await axios.put(`http://localhost:5000/api/tickets/${ticketId}/resolve-payment`, { status }, {
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/tickets/${ticketId}/resolve-payment`, { status }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setTickets(tickets.map(t =>

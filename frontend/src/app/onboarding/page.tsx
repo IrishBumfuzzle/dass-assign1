@@ -24,7 +24,7 @@ export default function OnboardingPage() {
     useEffect(() => {
         const fetchOrganizers = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/users/organizers');
+                const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/organizers');
                 setOrganizers(res.data);
             } catch (error) {
                 console.error("Failed to fetch organizers");
@@ -58,13 +58,13 @@ export default function OnboardingPage() {
             if (!skip) {
                 // Save interests
                 if (selectedInterests.length > 0) {
-                    await axios.put('http://localhost:5000/api/users/profile', { interests: selectedInterests }, {
+                    await axios.put((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', { interests: selectedInterests }, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                 }
                 // Follow selected organizers
                 for (const orgId of selectedOrganizers) {
-                    await axios.put(`http://localhost:5000/api/users/follow/${orgId}`, {}, {
+                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/follow/${orgId}`, {}, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                 }

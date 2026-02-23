@@ -38,7 +38,7 @@ export default function EventDetailsPage() {
 
         const fetchEvent = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/events/${id}`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/events/${id}`);
                 setEvent(res.data);
             } catch (err) {
                 setError("Failed to load event details.");
@@ -64,12 +64,12 @@ export default function EventDetailsPage() {
         try {
             if (event?.eventType === 'Normal' && event?.isTeamEvent) {
                 if (teamMode === 'create') {
-                    await axios.post('http://localhost:5000/api/teams/create', {
+                    await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/teams/create', {
                         eventId: event._id,
                         teamName: teamName
                     }, { headers: { Authorization: `Bearer ${token}` } });
                 } else {
-                    await axios.post('http://localhost:5000/api/teams/join', {
+                    await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/teams/join', {
                         inviteCode: inviteCode
                     }, { headers: { Authorization: `Bearer ${token}` } });
                 }
@@ -80,7 +80,7 @@ export default function EventDetailsPage() {
                     return;
                 }
 
-                await axios.post('http://localhost:5000/api/tickets', {
+                await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/tickets', {
                     eventId: event?._id,
                     formData: formData,
                     merchandiseSelection: event?.eventType === 'Merchandise' ? merchSelection : undefined,

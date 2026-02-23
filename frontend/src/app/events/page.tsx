@@ -30,7 +30,7 @@ export default function BrowseEventsPage() {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const res = await axios.get('http://localhost:5000/api/users/profile', {
+                    const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     setFollowedIds(res.data.followedOrganizers || []);
@@ -60,7 +60,7 @@ export default function BrowseEventsPage() {
                     query += `&userId=${user._id}`;
                 }
 
-                const res = await axios.get(`http://localhost:5000/api/events${query}`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/events${query}`);
                 setEvents(res.data);
             } catch (error) {
                 console.error("Fetch error");

@@ -54,7 +54,7 @@ export default function AdminDashboard() {
     const fetchOrganizers = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.get('http://localhost:5000/api/admin/organizers', {
+            const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/admin/organizers', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setOrganizers(res.data);
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
     const fetchPasswordResets = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.get('http://localhost:5000/api/admin/password-resets', {
+            const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/admin/password-resets', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPasswordResets(res.data);
@@ -78,7 +78,7 @@ export default function AdminDashboard() {
     const handleCreateOrganizer = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.post('http://localhost:5000/api/admin/organizers', newOrg, {
+            const res = await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/admin/organizers', newOrg, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             // Show generated credentials
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
         if (!confirm(`Are you sure you want to delete ${name}?`)) return;
         const token = localStorage.getItem('token');
         try {
-            await axios.delete(`http://localhost:5000/api/admin/organizers/${id}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/organizers/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchOrganizers();
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
         if (!selectedRequest) return;
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.put(`http://localhost:5000/api/admin/password-resets/${selectedRequest._id}`, { status, adminComments: adminComment }, {
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/password-resets/${selectedRequest._id}`, { status, adminComments: adminComment }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (status === 'Approved') {

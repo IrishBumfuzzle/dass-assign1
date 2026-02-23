@@ -28,7 +28,7 @@ export default function EditEventPage() {
         if (!id) return;
         const fetchEvent = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/events/${id}`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/events/${id}`);
                 setEvent(res.data);
                 setDescription(res.data.description);
                 setDeadline(res.data.deadline ? new Date(res.data.deadline).toISOString().slice(0, 16) : '');
@@ -64,7 +64,7 @@ export default function EditEventPage() {
                 if (status === 'Closed') payload.status = 'Closed';
             }
 
-            await axios.put(`http://localhost:5000/api/events/${id}`, payload, {
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/events/${id}`, payload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMsg({ type: 'success', content: 'Event updated successfully!' });

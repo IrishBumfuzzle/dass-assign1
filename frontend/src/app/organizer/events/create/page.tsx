@@ -102,7 +102,7 @@ export default function CreateEvent() {
                 };
             }
 
-            await axios.post('http://localhost:5000/api/events', payload, {
+            await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/events', payload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
