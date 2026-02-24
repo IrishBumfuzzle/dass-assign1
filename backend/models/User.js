@@ -41,7 +41,6 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
 
 const User = mongoose.model("User", UserSchema);
 
-
 const ParticipantSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -60,8 +59,9 @@ const OrganizerSchema = new mongoose.Schema({
     organizerName: { type: String, required: true },
     description: { type: String },
     category: { type: String },
-    contactEmail: { type: String }, 
+    contactEmail: { type: String },
     discordWebhookUrl: { type: String },
+    isArchived: { type: Boolean, default: false },
 });
 
 const AdminSchema = new mongoose.Schema({});

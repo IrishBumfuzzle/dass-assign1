@@ -1,1 +1,2 @@
-https://ilovedass.vercel.app
+frontend URL = https://ilovedass.vercel.app
+backend URL = https://ilovedass-fhy9.vercel.app

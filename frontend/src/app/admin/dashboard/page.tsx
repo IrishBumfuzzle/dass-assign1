@@ -9,6 +9,8 @@ import Navbar from '../../../components/layout/Navbar';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -31,16 +33,16 @@ export default function AdminDashboard() {
     const [passwordResets, setPasswordResets] = useState<any[]>([]);
     const [openDialog, setOpenDialog] = useState(false);
 
-    
+
     const [createdCredentials, setCreatedCredentials] = useState<{ email: string; password: string } | null>(null);
 
-    
+
     const [resolveDialog, setResolveDialog] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState<any>(null);
     const [adminComment, setAdminComment] = useState('');
     const [generatedPassword, setGeneratedPassword] = useState('');
 
-    
+
     const [newOrg, setNewOrg] = useState({
         organizerName: '', email: '', password: '',
         contactEmail: '', discordWebhookUrl: '', category: '', description: ''
@@ -81,7 +83,7 @@ export default function AdminDashboard() {
             const res = await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/admin/organizers', newOrg, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             setCreatedCredentials({
                 email: res.data.email,
                 password: res.data.generatedPassword,
@@ -103,6 +105,20 @@ export default function AdminDashboard() {
             fetchOrganizers();
         } catch (error) {
             alert("Failed to delete");
+        }
+    };
+
+    const handleArchive = async (id: string, name: string, isArchived: boolean) => {
+        const action = isArchived ? 'unarchive' : 'archive';
+        if (!confirm(`Are you sure you want to ${action} ${name}?`)) return;
+        const token = localStorage.getItem('token');
+        try {
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/organizers/${id}/archive`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            fetchOrganizers();
+        } catch (error) {
+            alert(`Failed to ${action}`);
         }
     };
 
@@ -153,16 +169,24 @@ export default function AdminDashboard() {
                                     <TableCell><strong>Name</strong></TableCell>
                                     <TableCell><strong>Email</strong></TableCell>
                                     <TableCell><strong>Category</strong></TableCell>
+                                    <TableCell><strong>Status</strong></TableCell>
                                     <TableCell><strong>Discord Webhook?</strong></TableCell>
                                     <TableCell><strong>Actions</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {organizers.map((org) => (
-                                    <TableRow key={org._id}>
+                                    <TableRow key={org._id} sx={{ opacity: org.isArchived ? 0.6 : 1 }}>
                                         <TableCell>{org.organizerName}</TableCell>
                                         <TableCell>{org.email}</TableCell>
                                         <TableCell>{org.category || '-'}</TableCell>
+                                        <TableCell>
+                                            {org.isArchived ? (
+                                                <Typography color="warning.main" variant="body2" fontWeight="bold">Archived</Typography>
+                                            ) : (
+                                                <Typography color="success.main" variant="body2" fontWeight="bold">Active</Typography>
+                                            )}
+                                        </TableCell>
                                         <TableCell>
                                             {org.discordWebhookUrl ?
                                                 <Typography color="success.main" variant="body2">Yes</Typography> :
@@ -170,7 +194,10 @@ export default function AdminDashboard() {
                                             }
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="error" onClick={() => handleDelete(org._id, org.organizerName)}>
+                                            <IconButton color="primary" onClick={() => handleArchive(org._id, org.organizerName, org.isArchived)} title={org.isArchived ? "Unarchive Organizer" : "Archive Organizer"}>
+                                                {org.isArchived ? <UnarchiveIcon /> : <ArchiveIcon />}
+                                            </IconButton>
+                                            <IconButton color="error" onClick={() => handleDelete(org._id, org.organizerName)} title="Delete Organizer">
                                                 <DeleteIcon />
                                             </IconButton>
                                         </TableCell>
@@ -225,7 +252,7 @@ export default function AdminDashboard() {
                 </CustomTabPanel>
             </Container>
 
-            {}
+            { }
             <Dialog open={openDialog} onClose={() => { setOpenDialog(false); setCreatedCredentials(null); }} fullWidth maxWidth="sm">
                 <DialogTitle>Add New Organizer</DialogTitle>
                 <DialogContent>
@@ -294,7 +321,7 @@ export default function AdminDashboard() {
                 </DialogActions>
             </Dialog>
 
-            {}
+            { }
             <Dialog open={resolveDialog} onClose={() => { setResolveDialog(false); setGeneratedPassword(''); }} fullWidth maxWidth="sm">
                 <DialogTitle>Resolve Password Reset</DialogTitle>
                 <DialogContent>

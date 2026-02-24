@@ -13,7 +13,7 @@ const generateToken = (id) => {
 const verifyCaptcha = async (token) => {
     if (!token) return false;
 
-        const secret = process.env.RECAPTCHA_SECRET_KEY || "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
+    const secret = process.env.RECAPTCHA_SECRET_KEY || "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
     try {
         const response = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`,
@@ -98,6 +98,11 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (user && (await user.matchPassword(password))) {
+            if (user.isArchived) {
+                return res
+                    .status(403)
+                    .json({ message: "This account has been archived. Please contact an admin." });
+            }
             res.json({
                 _id: user._id,
                 email: user.email,

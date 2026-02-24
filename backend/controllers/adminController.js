@@ -4,16 +4,13 @@ const crypto = require("crypto");
 const { User, Organizer } = require("../models/User");
 const PasswordResetRequest = require("../models/PasswordResetRequest");
 
-
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
-
 const generatePassword = () => {
     return crypto.randomBytes(6).toString("base64url").slice(0, 12);
 };
-
 
 const generateOrgEmail = (organizerName) => {
     const slug = organizerName.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -57,7 +54,7 @@ const createOrganizer = async (req, res) => {
                 organizerName: organizer.organizerName,
                 email: organizer.email,
                 role: organizer.role,
-                generatedPassword: finalPassword, 
+                generatedPassword: finalPassword,
             });
         } else {
             res.status(400).json({ message: "Invalid organizer data" });
@@ -68,9 +65,6 @@ const createOrganizer = async (req, res) => {
     }
 };
 
-
-
-
 const getAllOrganizers = async (req, res) => {
     try {
         const organizers = await User.find({ role: "Organizer" }).select("-password");
@@ -79,9 +73,6 @@ const getAllOrganizers = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
-
-
-
 
 const deleteOrganizer = async (req, res) => {
     try {
@@ -97,8 +88,20 @@ const deleteOrganizer = async (req, res) => {
     }
 };
 
-
-
+const archiveOrganizer = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (user) {
+            user.isArchived = !user.isArchived;
+            await user.save();
+            res.json({ message: `Organizer ${user.isArchived ? "archived" : "unarchived"}` });
+        } else {
+            res.status(404).json({ message: "Organizer not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+};
 
 const getPasswordResetRequests = async (req, res) => {
     try {
@@ -110,9 +113,6 @@ const getPasswordResetRequests = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
-
-
-
 
 const resolvePasswordReset = async (req, res) => {
     try {
@@ -131,7 +131,7 @@ const resolvePasswordReset = async (req, res) => {
             resetRequest.newPassword = newPassword;
 
             const user = await User.findById(resetRequest.organizerId._id);
-            user.password = newPassword; 
+            user.password = newPassword;
             await user.save();
         }
 
@@ -147,6 +147,7 @@ module.exports = {
     createOrganizer,
     getAllOrganizers,
     deleteOrganizer,
+    archiveOrganizer,
     getPasswordResetRequests,
     resolvePasswordReset,
 };

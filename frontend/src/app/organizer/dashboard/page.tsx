@@ -82,7 +82,7 @@ export default function OrganizerDashboard() {
                         </Button>
                     </Box>
 
-                    {}
+                    { }
                     <Grid container spacing={3} sx={{ mb: 5 }}>
                         <Grid item xs={12} sm={6} md={2.4}>
                             <Card sx={{ bgcolor: 'white', borderRadius: 2 }}>
