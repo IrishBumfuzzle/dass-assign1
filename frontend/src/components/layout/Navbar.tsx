@@ -49,6 +49,7 @@ export default function Navbar() {
                     <Button color="inherit" component={Link} href="/organizer/dashboard">Dashboard</Button>
                     <Button color="inherit" component={Link} href="/organizer/events/create">Create Event</Button>
                     <Button color="inherit" component={Link} href="/organizer/profile">Profile</Button>
+                    <Button color="inherit" component={Link} href="/organizer/dashboard">Ongoing Events</Button>
                 </>
             );
         }

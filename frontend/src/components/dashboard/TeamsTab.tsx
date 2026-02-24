@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent, Grid, Button, Dialog, DialogTitle, DialogContent, TextField, List, ListItem, ListItemText, Chip } from '@mui/material';
+import { Box, Typography, Card, CardContent, Grid, Button, Dialog, DialogTitle, DialogContent, TextField, List, ListItem, ListItemText, Chip, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
 import io from 'socket.io-client';
 
@@ -10,17 +10,19 @@ export default function TeamsTab() {
     const [teams, setTeams] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    
+
     const [chatOpen, setChatOpen] = useState(false);
     const [selectedTeam, setSelectedTeam] = useState<any>(null);
     const [messages, setMessages] = useState<any[]>([]);
     const [messageInput, setMessageInput] = useState("");
     const [currentUser, setCurrentUser] = useState<any>(null);
 
-    
+
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
     const [typingUsers, setTypingUsers] = useState<string[]>([]);
     const [fileBase64, setFileBase64] = useState<string | null>(null);
+
+    const [newMsgAlert, setNewMsgAlert] = useState<{ open: boolean, message: string }>({ open: false, message: "" });
 
     useEffect(() => {
         fetchTeams();
@@ -33,7 +35,12 @@ export default function TeamsTab() {
 
         socket.on("receiveMessage", (message) => {
             setMessages((prev) => [...prev, message]);
-            setTypingUsers([]); 
+            setTypingUsers([]);
+            const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+            const currentUserId = localUser?._id || localUser?.id;
+            if (message.senderId !== currentUserId) {
+                setNewMsgAlert({ open: true, message: `New message from ${message.senderName}` });
+            }
         });
 
         socket.on("updateOnlineUsers", (users) => {
@@ -91,13 +98,13 @@ export default function TeamsTab() {
         const data = {
             teamId: selectedTeam._id,
             senderId: currentUser._id || currentUser.id,
-            senderName: currentUser.name,
+            senderName: currentUser.name || "Team Member",
             text: messageInput || "Sent a file",
             fileUrl: fileBase64
         };
 
         socket.emit("sendMessage", data);
-        socket.emit("stopTyping", { teamId: selectedTeam._id, userName: currentUser.name });
+        socket.emit("stopTyping", { teamId: selectedTeam._id, userName: currentUser.name || "Team Member" });
         setMessageInput("");
         setFileBase64(null);
     };
@@ -105,10 +112,11 @@ export default function TeamsTab() {
     const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessageInput(e.target.value);
         if (selectedTeam && currentUser) {
+            const userName = currentUser.name || "Team Member";
             if (e.target.value.trim() !== '') {
-                socket.emit("typing", { teamId: selectedTeam._id, userName: currentUser.name });
+                socket.emit("typing", { teamId: selectedTeam._id, userName });
             } else {
-                socket.emit("stopTyping", { teamId: selectedTeam._id, userName: currentUser.name });
+                socket.emit("stopTyping", { teamId: selectedTeam._id, userName });
             }
         }
     };
@@ -173,7 +181,7 @@ export default function TeamsTab() {
                 ))}
             </Grid>
 
-            {}
+            { }
             <Dialog open={chatOpen} onClose={() => setChatOpen(false)} fullWidth maxWidth="sm">
                 <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     Team Chat: {selectedTeam?.teamName}
@@ -201,7 +209,22 @@ export default function TeamsTab() {
                                                 <Typography variant="body1">{msg.text}</Typography>
                                                 {msg.fileUrl && (
                                                     <Box sx={{ mt: 1 }}>
-                                                        <img src={msg.fileUrl} alt="shared file" style={{ maxWidth: '100%', borderRadius: 4 }} />
+                                                        <Button
+                                                            variant="contained"
+                                                            size="small"
+                                                            component="a"
+                                                            href={msg.fileUrl}
+                                                            download="attachment"
+                                                            sx={{
+                                                                bgcolor: isMe ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)',
+                                                                color: isMe ? 'white' : 'text.primary',
+                                                                '&:hover': { bgcolor: isMe ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.1)' },
+                                                                textTransform: 'none',
+                                                                boxShadow: 'none'
+                                                            }}
+                                                        >
+                                                            📎 Download File
+                                                        </Button>
                                                     </Box>
                                                 )}
                                             </Box>
@@ -219,14 +242,14 @@ export default function TeamsTab() {
 
                     {fileBase64 && (
                         <Box sx={{ mb: 1 }}>
-                            <Chip label="Image Attached" color="success" size="small" onDelete={() => setFileBase64(null)} />
+                            <Chip label="File Attached" color="success" size="small" onDelete={() => setFileBase64(null)} />
                         </Box>
                     )}
 
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button component="label" variant="outlined" sx={{ minWidth: 0, px: 2 }}>
                             📎
-                            <input type="file" hidden accept="image/*" onChange={(e) => {
+                            <input type="file" hidden onChange={(e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
                                     const reader = new FileReader();
@@ -247,6 +270,17 @@ export default function TeamsTab() {
                     </Box>
                 </DialogContent>
             </Dialog>
+
+            <Snackbar
+                open={newMsgAlert.open}
+                autoHideDuration={4000}
+                onClose={() => setNewMsgAlert({ ...newMsgAlert, open: false })}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert severity="info" onClose={() => setNewMsgAlert({ ...newMsgAlert, open: false })} sx={{ width: '100%' }}>
+                    {newMsgAlert.message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

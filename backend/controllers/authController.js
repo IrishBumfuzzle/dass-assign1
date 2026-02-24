@@ -103,8 +103,18 @@ const loginUser = async (req, res) => {
                     .status(403)
                     .json({ message: "This account has been archived. Please contact an admin." });
             }
+            let name = "User";
+            if (user.role === "Participant") {
+                name = `${user.firstName} ${user.lastName}`;
+            } else if (user.role === "Organizer") {
+                name = user.organizerName;
+            } else if (user.role === "Admin") {
+                name = "Admin";
+            }
+
             res.json({
                 _id: user._id,
+                name: name,
                 email: user.email,
                 role: user.role,
                 token: generateToken(user._id),
