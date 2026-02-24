@@ -1,7 +1,5 @@
 # Fest event manager
 
-**Campus Event Management Platform for IIIT Hyderabad's Felicity Fest**
-
 ## Technology Stack
 
 | Layer    | Technology            |
@@ -14,45 +12,57 @@
 | QR       | qrcode / qrcode.react |
 | Auth     | JWT, bcrypt           |
 
-## Features Implemented
+## Advanced Features
 
-### Core Features
+### 1. Tier A Features (Choose 2)
 
-- **Authentication & Security** - IIIT email validation, bcrypt hashing, JWT auth, role-based access control, CAPTCHA
-- **User Onboarding** - Interest selection + organizer following on registration; editable from profile
-- **Event Types** - Normal Events (with custom form builder) and Merchandise Events (with stock management)
-- **Event Status Lifecycle** - Draft → Published → Ongoing → Closed with editing rules
-- **Browse & Filter** - Keyword search (debounced), type filter, date range, eligibility, followed clubs, trending (Top 5 by 24h registrations), preference-based ordering
-- **Registration** - Event registration with deadline/stock checks, QR code generation, email confirmation
-- **Dashboard** - Upcoming events, history (Normal/Merchandise/Completed/Cancelled tabs), real QR codes
-- **Organizer Dashboard** - Analytics summary (registrations, revenue, attendance, merch sales), event management
-- **Admin Dashboard** - Organizer provisioning with auto-generated credentials, password reset management
-- **Role-specific Navigation** - Different navbars for Participant, Organizer, and Admin roles
-- **Dynamic Form Builder** - Text, number, email, dropdown, checkbox, file upload fields with ordering and lock-after-registration
+#### 1.1. Hackathon Team Registration
 
-### Advanced Features
+- **Description**: Allows participants to create/join teams via an invite code. Auto-generates tickets for the whole team once the maximum team size is reached. Includes a real-time team chat.
+- **Justification**: Felicity prominently features hackathons and team-based events. Enabling team registration directly within the portal enhances the participant's collaborative experience and reduces the administrative burden on organizers. Choosing the QR scanner instead seemed more complex due to handling the camera and instand sending, as well making the dashboard
+- **Design Choices & Implementation**:
+    - **Data Model**: Implemented a `Team` mongoose schema storing `eventId`, `teamName`, `inviteCode`, and an array of `members`.
+    - **Invite Flow**: A unique random `inviteCode` is generated upon team creation. Users enter this code in the frontend (Teams tab) to query and push themselves into the team's `members` logic.
+    - **Auto-Ticketing**: Once the team size hits `maxTeamSize` defined by the Event, a backend controller automatically triggers `Ticket.insertMany` and `sendTicketEmail` for all registered members.
 
-#### Tier A (Choose 2)
+#### 1.2. Merchandise Payment Approval Workflow
 
-1. **Hackathon Team Registration** — Create/join teams via invite code, auto-ticket on team completion, team chat
-2. **Merchandise Payment Approval Workflow** — Upload payment proof, organizer approve/reject, stock decrement on approval
+- **Description**: Participants upload proof of payment (e.g., UPI screenshot) to purchase an event ticket or merchandise. Organizers review the proof and approve/reject it.
+- **Justification**: Not that difficult
+- **Design Choices & Implementation**:
+    - **Base64 Processing**: To remove the need for an external API, payment proofs are collected natively on the frontend via an `<input type="file" />`, instantly read into Base64 format through `FileReader`, and posted natively inside the JSON body to the backend (`express.json({ limit: "50mb" })` was implemented specifically for this).
+    - **Workflow**: Tickets are generated in a `Pending` state. Organizers see a list of pending tickets, click to un-collapse the Base64 image in a Modal, and trigger a `PUT` request to update status.
+    - **Inventory Management**: Stock decrementation occurs only upon final Organizer Approval.
 
-#### Tier B (Choose 2)
+### 2. Tier B Features (Choose 2)
 
-1. **Organizer Password Reset Workflow** — Request → Admin review → Approve with auto-generated password / Reject
-2. **Real-time Team Chat** — Socket.IO-based messaging within teams, typing indicators, online status, file sharing
+#### 2.1. Organizer Password Reset Workflow
 
-#### Tier C (Choose 1)
+- **Description**: Organizers request a password reset, which an Admin then approves (providing an auto-generated password) or rejects.
+- **Justification**: Not very difficult
+- **Design Choices & Implementation**:
+    - **Data Model**: A `PasswordResetRequest` collection tracks `organizerId`, `reason`, `status` (Pending/Approved/Rejected), and `adminComments`.
+    - **Admin Flow**: Admins have a dedicated Dashboard tab to review incoming reset requests. If approved, `crypto.randomBytes` immediately injects a secure newly-hashed password into the `User` model, and passes the raw string to the Admin's frontend UI to securely give to the organizer.
 
-1. **Bot Protection (CAPTCHA)** — Google reCAPTCHA v2 on login and registration pages, server-side verification
+#### 2.2. Real-time Team Chat
 
-### Justification for Advanced Features
+- **Description**: Team members can communicate privately within a live chat interface equipped with Socket.IO, typing indicators, and file-sharing.
+- **Justification**: Implementing a real-time team chat was highly synergistic with the Tier A Team Registration feature. It solves the issue of team coordination, bypassing the need for students to create external WhatsApp/Discord groups. The alternative Tier B task (Global Discussion Forum) was bypassed as team-level scoping provides significantly more targeted value and lower spam risk for an event system.
+- **Design Choices & Implementation**:
+    - **Technology**: Utilized `Socket.IO` connected over the central `http` express server, attaching event listeners natively for `joinTeamRoom`, `sendMessage`, and `typing`.
+    - **State Management**: Online statuses are tracked natively inside a backend global `Map()` linking `userId` to `socket.id`.
+    - **Content Handlers**: File sharing was explicitly designed around Base64 payloads pushed straight over the Socket layer (`transmitMsg.fileUrl`)-`a technical decision made to avoid handling more APis.
 
-- **Hackathon Team Registration**: Essential for Felicity hackathons where collaborative team formation is core to the event experience
-- **Merchandise Payment Approval**: Needed for campus merch sales where UPI payments require manual verification before dispatch
-- **Organizer Password Reset**: Since organizers can't self-register, a secure admin-mediated reset workflow is necessary
-- **Team Chat**: Enables coordination among hackathon team members without leaving the platform
-- **CAPTCHA**: Prevents automated abuse of registration and login endpoints
+### 3. Tier C Features (Choose 1)
+
+#### 3.1. Bot Protection (CAPTCHA)
+
+- **Description**: Added Google reCAPTCHA v2 verification over unauthenticated, outward-facing endpoints (Login & Registration).
+- **Justification**: Easy
+- **Design Choices & Implementation**:
+    - **Frontend**: Used `react-google-recaptcha` to physically render the "I am not a robot" widget, blocking the "Submit" `<Button />` state until `onChange` fires a token.
+    - **Backend**: Overrode the authentication controllers to ingest the `captcha` object, passing it securely inside an `axios.post` backend-to-backend pipeline against Google's `siteverify` API.
+    - **Technical note**: I natively injected the standard globally accepted `v2 Test Site Key` into the implementation to allow immediate functionality checkups without needing to expose or configure production API keys.
 
 ## Project Structure
 
@@ -85,9 +95,9 @@ assignment-1/
 ```bash
 cd backend
 npm install
-cp .env.example .env  # Configure MONGO_URI, JWT_SECRET, RECAPTCHA_SECRET_KEY
-npm run seed           # Seed database with sample data
-npm run dev            # Start dev server on port 5000
+cp .env.example .env
+npm run seed
+npm run dev
 ```
 
 ### Frontend
@@ -95,7 +105,7 @@ npm run dev            # Start dev server on port 5000
 ```bash
 cd frontend
 npm install
-npm run dev            # Start Next.js dev server on port 3000
+npm run dev
 ```
 
 ### Seed Credentials
