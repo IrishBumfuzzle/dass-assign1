@@ -21,16 +21,16 @@ export default function OrganizerDetailPage() {
         if (!id) return;
         const fetchData = async () => {
             try {
-                // Fetch Organizer Details
+                
                 const orgRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/organizers/${id}`);
                 setOrganizer(orgRes.data);
 
-                // Fetch Organizer's Events (Searching by keyword logic or new route? Using search keyword for now as fuzzy match)
-                // Ideally backend should have /api/events/organizer/:id
-                // Using client filtering on getEvents for now as per minimal backend changes strategy, 
-                // OR better, create GET /api/events?organizerId=... 
-                // Let's rely on string match from existing or just fetch all and filter client side (not performant but works for small app)
-                // Actually, let's just fetch all and filter in frontend for simplicity given constraints
+                
+                
+                
+                
+                
+                
                 const eventsRes = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/events');
                 const orgEvents = eventsRes.data.filter((e: any) => e.organizerId._id === id || e.organizerId === id);
                 setEvents(orgEvents);
@@ -53,7 +53,7 @@ export default function OrganizerDetailPage() {
         <React.Fragment>
             <Navbar />
             <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh', pb: 8 }}>
-                {/* Header */}
+                {}
                 <Box sx={{ bgcolor: 'white', py: 6, borderBottom: '1px solid #e2e8f0' }}>
                     <Container maxWidth="lg">
                         <Typography variant="h3" fontWeight="bold" gutterBottom>{organizer.organizerName}</Typography>

@@ -18,7 +18,7 @@ export default function Dashboard() {
     const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
     const [tabValue, setTabValue] = useState(0);
 
-    // Authentication Guard & Data Fetching
+    
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -26,7 +26,7 @@ export default function Dashboard() {
             return;
         }
 
-        // Check role
+        
         const userStr = localStorage.getItem('user');
         if (userStr) {
             const user = JSON.parse(userStr);
@@ -96,15 +96,15 @@ export default function Dashboard() {
                             }
                             const now = new Date();
                             let filtered = tickets;
-                            if (tabValue === 0) { // Upcoming
+                            if (tabValue === 0) { 
                                 filtered = tickets.filter(t => t.eventId && new Date(t.eventId.startDate) > now && t.status !== 'Cancelled' && t.status !== 'Rejected');
-                            } else if (tabValue === 2) { // Normal
+                            } else if (tabValue === 2) { 
                                 filtered = tickets.filter(t => t.eventId?.eventType === 'Normal');
-                            } else if (tabValue === 3) { // Merchandise
+                            } else if (tabValue === 3) { 
                                 filtered = tickets.filter(t => t.eventId?.eventType === 'Merchandise');
-                            } else if (tabValue === 4) { // Completed
+                            } else if (tabValue === 4) { 
                                 filtered = tickets.filter(t => t.eventId && new Date(t.eventId.endDate) < now && t.status !== 'Cancelled' && t.status !== 'Rejected');
-                            } else if (tabValue === 5) { // Cancelled/Rejected
+                            } else if (tabValue === 5) { 
                                 filtered = tickets.filter(t => t.status === 'Cancelled' || t.status === 'Rejected');
                             }
 
@@ -183,7 +183,7 @@ export default function Dashboard() {
                 </Container>
             </Box>
 
-            {/* Ticket Dialog with real QR */}
+            {}
             <Dialog open={Boolean(selectedTicket)} onClose={handleCloseTicket} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold' }}>
                     Event Ticket
@@ -228,7 +228,7 @@ export default function Dashboard() {
                                 />
                             </Box>
 
-                            {/* Real QR Code */}
+                            {}
                             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
                                 {selectedTicket.qrCodeData ? (
                                     <img src={selectedTicket.qrCodeData} alt="QR Code" style={{ width: 200, height: 200 }} />

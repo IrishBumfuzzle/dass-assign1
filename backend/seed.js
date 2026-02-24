@@ -19,21 +19,21 @@ const seedData = async () => {
     await connectDB();
 
     try {
-        // Clear existing data
-        await User.deleteMany({});
+
+                await User.deleteMany({});
         await Event.deleteMany({});
         console.log("Data cleared");
 
-        // Create Admin
-        const admin = await Admin.create({
+
+                const admin = await Admin.create({
             email: "admin@felicity.iiit.ac.in",
             password: "password123",
             role: "Admin",
         });
         console.log("Admin created:", admin.email);
 
-        // Create Organizer
-        const organizer = await Organizer.create({
+
+                const organizer = await Organizer.create({
             email: "techclub@felicity.iiit.ac.in",
             password: "password123",
             role: "Organizer",
@@ -46,7 +46,6 @@ const seedData = async () => {
         });
         console.log("Organizer created:", organizer.email);
 
-        // Create a second organizer
         const organizer2 = await Organizer.create({
             email: "literaryclub@felicity.iiit.ac.in",
             password: "password123",
@@ -58,8 +57,8 @@ const seedData = async () => {
         });
         console.log("Organizer 2 created:", organizer2.email);
 
-        // Create Participant (IIIT)
-        const participantIIIT = await Participant.create({
+
+                const participantIIIT = await Participant.create({
             email: "student@students.iiit.ac.in",
             password: "password123",
             role: "Participant",
@@ -72,8 +71,8 @@ const seedData = async () => {
         });
         console.log("Participant (IIIT) created:", participantIIIT.email);
 
-        // Create Participant (Non-IIIT)
-        const participantNonIIIT = await Participant.create({
+
+                const participantNonIIIT = await Participant.create({
             email: "external@gmail.com",
             password: "password123",
             role: "Participant",
@@ -86,8 +85,8 @@ const seedData = async () => {
         });
         console.log("Participant (Non-IIIT) created:", participantNonIIIT.email);
 
-        // Create Normal Event (Published)
-        const techTalk = await NormalEvent.create({
+
+                const techTalk = await NormalEvent.create({
             name: "AI in 2026: Future Trends",
             description:
                 "An insightful session on the advancements of Artificial Intelligence. Join leading researchers and industry experts as they discuss the future trajectory of AI.",
@@ -114,8 +113,8 @@ const seedData = async () => {
         });
         console.log("Normal Event created:", techTalk.name);
 
-        // Create Team Event (Published)
-        const hackathon = await NormalEvent.create({
+
+                const hackathon = await NormalEvent.create({
             name: "Felicity Hackathon 2026",
             description:
                 "A 24-hour hackathon where teams compete to build innovative solutions. Form your team and register now!",
@@ -137,8 +136,8 @@ const seedData = async () => {
         });
         console.log("Team Event created:", hackathon.name);
 
-        // Create Merchandise Event (Published)
-        const hoodieSale = await MerchandiseEvent.create({
+
+                const hoodieSale = await MerchandiseEvent.create({
             name: "Felicity Campus Hoodie",
             description:
                 "Official Felicity 2026 Campus Hoodies. Limited Stock! Premium quality with exclusive designs.",
@@ -162,8 +161,8 @@ const seedData = async () => {
         });
         console.log("Merchandise Event created:", hoodieSale.name);
 
-        // Create a Draft event
-        const draftEvent = await NormalEvent.create({
+
+                const draftEvent = await NormalEvent.create({
             name: "Workshop: Web Development Basics",
             description:
                 "A hands-on workshop covering HTML, CSS, and JavaScript fundamentals. Draft - not yet published.",

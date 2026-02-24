@@ -18,7 +18,7 @@ export default function EditEventPage() {
     const [event, setEvent] = useState<any>(null);
     const [msg, setMsg] = useState({ type: '', content: '' });
 
-    // Editable fields
+    
     const [description, setDescription] = useState('');
     const [deadline, setDeadline] = useState('');
     const [registrationLimit, setRegistrationLimit] = useState('');
@@ -50,17 +50,17 @@ export default function EditEventPage() {
             const payload: any = { description };
 
             if (event.status === 'Draft') {
-                // Draft: can change everything
+                
                 payload.deadline = deadline;
                 payload.registrationLimit = Number(registrationLimit) || undefined;
                 payload.status = status;
             } else if (event.status === 'Published') {
-                // Published: limited changes
+                
                 if (deadline) payload.deadline = deadline;
                 if (registrationLimit) payload.registrationLimit = Number(registrationLimit);
                 if (status && ['Ongoing', 'Closed'].includes(status)) payload.status = status;
             } else if (event.status === 'Ongoing') {
-                // Ongoing: status to Closed only
+                
                 if (status === 'Closed') payload.status = 'Closed';
             }
 
@@ -108,7 +108,7 @@ export default function EditEventPage() {
                 )}
 
                 <Paper sx={{ p: 4 }}>
-                    {/* Non-editable display */}
+                    {}
                     <Box sx={{ mb: 4, p: 2, bgcolor: '#f8fafc', borderRadius: 2 }}>
                         <Typography variant="subtitle2" color="text.secondary">Event Name</Typography>
                         <Typography variant="h6" fontWeight="bold">{event.name}</Typography>
@@ -119,7 +119,7 @@ export default function EditEventPage() {
                     </Box>
 
                     <Grid container spacing={3}>
-                        {/* Description - always editable except Closed */}
+                        {}
                         <Grid item xs={12}>
                             <TextField
                                 label="Description"
@@ -132,7 +132,7 @@ export default function EditEventPage() {
                             />
                         </Grid>
 
-                        {/* Deadline & Limit - editable in Draft/Published */}
+                        {}
                         {(isDraft || isPublished) && (
                             <>
                                 <Grid item xs={6}>
@@ -159,7 +159,7 @@ export default function EditEventPage() {
                             </>
                         )}
 
-                        {/* Status transition */}
+                        
                         {!isClosed && (
                             <Grid item xs={12}>
                                 <FormControl fullWidth>

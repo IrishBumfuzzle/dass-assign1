@@ -26,7 +26,7 @@ export default function EventAnalytics() {
         totalRevenue: 0,
     });
 
-    // Image Modal State
+    
     const [imgOpen, setImgOpen] = useState(false);
     const [selectedImg, setSelectedImg] = useState("");
 
@@ -122,7 +122,7 @@ export default function EventAnalytics() {
                     </Button>
                 </Box>
 
-                {/* Analytics Cards */}
+                {}
                 <Grid container spacing={3} sx={{ mb: 4 }}>
                     <Grid item xs={12} sm={4}>
                         <Card>
@@ -150,7 +150,7 @@ export default function EventAnalytics() {
                     </Grid>
                 </Grid>
 
-                {/* Search */}
+                {}
                 <TextField
                     fullWidth
                     placeholder="Search by participant name or email..."
@@ -267,7 +267,7 @@ export default function EventAnalytics() {
 
             </Container>
 
-            {/* Image Modal */}
+            {}
             <Dialog open={imgOpen} onClose={() => setImgOpen(false)} maxWidth="md">
                 <DialogTitle>Payment Proof</DialogTitle>
                 <DialogContent>

@@ -25,8 +25,8 @@ const createTeam = async (req, res) => {
             return res.status(400).json({ message: "Invalid event or not a team event" });
         }
 
-        // Check if user already in a team for this event
-        const existingTeam = await Team.findOne({ eventId, "members.participantId": participantId });
+
+                const existingTeam = await Team.findOne({ eventId, "members.participantId": participantId });
         if (existingTeam) {
             return res.status(400).json({ message: "You are already a part of a team for this event." });
         }
@@ -43,8 +43,8 @@ const createTeam = async (req, res) => {
             isComplete: event.maxTeamSize === 1,
         });
 
-        // If team of 1, auto-generate ticket
-        if (team.isComplete) {
+
+                if (team.isComplete) {
             const qrData = {
                 ticketId: "pending",
                 eventId: event._id.toString(),
@@ -61,8 +61,8 @@ const createTeam = async (req, res) => {
                 qrCodeData,
             });
 
-            // Send email
-            const participant = await User.findById(participantId);
+
+                        const participant = await User.findById(participantId);
             if (participant) {
                 const pName = `${participant.firstName} ${participant.lastName}`;
                 sendTicketEmail(participant.email, pName, event.name, ticket._id.toString(), qrCodeData);
@@ -115,8 +115,8 @@ const joinTeam = async (req, res) => {
 
         await team.save();
 
-        // If complete, generate tickets for everyone
-        if (team.isComplete) {
+
+                if (team.isComplete) {
             const event = await NormalEvent.findById(team.eventId);
             for (let member of team.members) {
                 const qrData = {
@@ -136,8 +136,8 @@ const joinTeam = async (req, res) => {
                     qrCodeData,
                 });
 
-                // Send email to each member
-                const participant = await User.findById(member.participantId);
+
+                                const participant = await User.findById(member.participantId);
                 if (participant && event) {
                     const pName = `${participant.firstName} ${participant.lastName}`;
                     sendTicketEmail(

@@ -12,12 +12,12 @@ export default function LoginPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Password Reset State
+    
     const [resetOpen, setResetOpen] = useState(false);
     const [resetData, setResetData] = useState({ email: '', reason: '' });
     const [resetStatus, setResetStatus] = useState({ loading: false, error: '', success: '' });
 
-    // CAPTCHA State
+    
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
     const handleResetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,11 +54,11 @@ export default function LoginPage() {
             const res = await axios.post((process.env.NEXT_PUBLIC_API_URL || '') + '/api/auth/login', { ...credentials, captcha: captchaToken });
             const { token, role, _id, name, email } = res.data;
 
-            // Store token and user info
+            
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify({ _id, name, email, role }));
 
-            // Redirect based on role
+            
             if (role === 'Organizer') {
                 router.push('/organizer/dashboard');
             } else if (role === 'Admin') {
@@ -137,7 +137,7 @@ export default function LoginPage() {
                 </Paper>
             </Container>
 
-            {/* Password Reset Dialog for Organizers */}
+            {}
             <Dialog open={resetOpen} onClose={() => setResetOpen(false)} maxWidth="sm" fullWidth>
                 <DialogTitle>Organizer Password Reset Request</DialogTitle>
                 <DialogContent>

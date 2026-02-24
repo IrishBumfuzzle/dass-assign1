@@ -2,9 +2,9 @@ const { Event, NormalEvent, MerchandiseEvent } = require("../models/Event");
 const Ticket = require("../models/Ticket");
 const { Participant } = require("../models/User");
 
-// @desc    Create a new event (Organizer only)
-// @route   POST /api/events
-// @access  Private (Organizer)
+
+
+
 const createEvent = async (req, res) => {
     try {
         const {
@@ -60,8 +60,8 @@ const createEvent = async (req, res) => {
 
         const createdEvent = await event.save();
 
-        // Trigger Discord Webhook only if event is Published
-        if (createdEvent.status === "Published") {
+
+                if (createdEvent.status === "Published") {
             const { sendEventNotification } = require("../utils/discord");
             const { User } = require("../models/User");
             const organizerUser = await User.findById(req.user._id);
@@ -77,9 +77,9 @@ const createEvent = async (req, res) => {
     }
 };
 
-// @desc    Update an event (Organizer only)
-// @route   PUT /api/events/:id
-// @access  Private (Organizer)
+
+
+
 const updateEvent = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
@@ -94,15 +94,15 @@ const updateEvent = async (req, res) => {
         const currentStatus = event.status;
         const updates = req.body;
 
-        // Editing rules based on status
-        if (currentStatus === "Draft") {
-            // Free edits allowed, can transition to Published
-            Object.keys(updates).forEach((key) => {
-                if (key === "eventType" || key === "organizerId") return; // Cannot change type or owner
+
+                if (currentStatus === "Draft") {
+
+                        Object.keys(updates).forEach((key) => {
+                if (key === "eventType" || key === "organizerId") return; 
                 event[key] = updates[key];
             });
-            // Handle discriminator-specific fields
-            if (event.eventType === "Normal" && updates.customFormFields) {
+
+                        if (event.eventType === "Normal" && updates.customFormFields) {
                 event.customFormFields = updates.customFormFields;
             }
             if (event.eventType === "Normal" && updates.isTeamEvent !== undefined) {
@@ -113,23 +113,23 @@ const updateEvent = async (req, res) => {
                 event.merchandiseDetails = updates.merchandiseDetails;
             }
         } else if (currentStatus === "Published") {
-            // Limited edits: description, extend deadline, increase limit, close registrations
-            const allowedFields = ["description", "deadline", "registrationLimit", "status"];
+
+                        const allowedFields = ["description", "deadline", "registrationLimit", "status"];
             Object.keys(updates).forEach((key) => {
                 if (!allowedFields.includes(key)) return;
                 if (key === "deadline") {
-                    // Can only extend deadline
-                    if (new Date(updates.deadline) > new Date(event.deadline)) {
+
+                                        if (new Date(updates.deadline) > new Date(event.deadline)) {
                         event.deadline = updates.deadline;
                     }
                 } else if (key === "registrationLimit") {
-                    // Can only increase limit
-                    if (updates.registrationLimit > event.registrationLimit) {
+
+                                        if (updates.registrationLimit > event.registrationLimit) {
                         event.registrationLimit = updates.registrationLimit;
                     }
                 } else if (key === "status") {
-                    // Can transition to Ongoing or Closed
-                    if (["Ongoing", "Closed"].includes(updates.status)) {
+
+                                        if (["Ongoing", "Closed"].includes(updates.status)) {
                         event.status = updates.status;
                     }
                 } else {
@@ -137,8 +137,8 @@ const updateEvent = async (req, res) => {
                 }
             });
         } else if (currentStatus === "Ongoing" || currentStatus === "Closed") {
-            // Only status change allowed
-            if (updates.status) {
+
+                        if (updates.status) {
                 if (currentStatus === "Ongoing" && ["Closed"].includes(updates.status)) {
                     event.status = updates.status;
                 }
@@ -149,21 +149,21 @@ const updateEvent = async (req, res) => {
             }
         }
 
-        // Lock form fields after first registration
-        if (event.eventType === "Normal" && updates.customFormFields) {
+
+                if (event.eventType === "Normal" && updates.customFormFields) {
             const ticketCount = await Ticket.countDocuments({
                 eventId: event._id,
                 status: { $ne: "Cancelled" },
             });
             if (ticketCount > 0) {
-                // Don't update form fields
-                delete updates.customFormFields;
+
+                                delete updates.customFormFields;
                 event.formLocked = true;
             }
         }
 
-        // If publishing, send Discord notification
-        if (updates.status === "Published" && currentStatus === "Draft") {
+
+                if (updates.status === "Published" && currentStatus === "Draft") {
             const { sendEventNotification } = require("../utils/discord");
             const { User } = require("../models/User");
             const organizerUser = await User.findById(req.user._id);
@@ -180,9 +180,9 @@ const updateEvent = async (req, res) => {
     }
 };
 
-// @desc    Get all events with search, filter, and sort
-// @route   GET /api/events
-// @access  Public
+
+
+
 const getEvents = async (req, res) => {
     try {
         const { keyword, type, startDate, endDate, eligibility, sort, followedClubs, userId } =
@@ -190,11 +190,11 @@ const getEvents = async (req, res) => {
 
         let query = {};
 
-        // Only show Published or Ongoing events to public
-        query.status = { $in: ["Published", "Ongoing"] };
 
-        // Search (Fuzzy matching using MongoDB Atlas Search)
-        if (keyword) {
+                query.status = { $in: ["Published", "Ongoing"] };
+
+
+                if (keyword) {
             const searchResults = await Event.aggregate([
                 {
                     $search: {
@@ -211,13 +211,13 @@ const getEvents = async (req, res) => {
             query._id = { $in: searchResults.map((res) => res._id) };
         }
 
-        // Filter by Type
-        if (type) {
+
+                if (type) {
             query.eventType = type;
         }
 
-        // Filter by Date Range
-        if (startDate && endDate) {
+
+                if (startDate && endDate) {
             query.startDate = { $gte: new Date(startDate) };
             query.endDate = { $lte: new Date(endDate) };
         } else if (startDate) {
@@ -226,23 +226,23 @@ const getEvents = async (req, res) => {
             query.endDate = { $lte: new Date(endDate) };
         }
 
-        // Filter by Eligibility
-        if (eligibility) {
+
+                if (eligibility) {
             query.eligibility = { $regex: eligibility, $options: "i" };
         }
 
-        // Filter by followed clubs
-        if (followedClubs) {
+
+                if (followedClubs) {
             const clubIds = followedClubs.split(",");
             query.organizerId = { $in: clubIds };
         }
 
-        // Default sort
-        let sortOption = { startDate: 1 };
+
+                let sortOption = { startDate: 1 };
 
         if (sort === "trending") {
-            // Aggregation to get top events by registration count in last 24 hours
-            const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+                        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
             const trendingEvents = await Ticket.aggregate([
                 { $match: { registrationDate: { $gte: twentyFourHoursAgo } } },
                 { $group: { _id: "$eventId", count: { $sum: 1 } } },
@@ -261,8 +261,8 @@ const getEvents = async (req, res) => {
                 }
             }
 
-            // Fall through to normal query with the filtered IDs
-            sortOption = { createdAt: -1 };
+
+                        sortOption = { createdAt: -1 };
         } else if (sort === "date") {
             sortOption = { startDate: 1 };
         }
@@ -278,9 +278,9 @@ const getEvents = async (req, res) => {
     }
 };
 
-// @desc    Get single event by ID
-// @route   GET /api/events/:id
-// @access  Public
+
+
+
 const getEventById = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id).populate(
@@ -299,9 +299,9 @@ const getEventById = async (req, res) => {
     }
 };
 
-// @desc    Get my created events (Organizer only)
-// @route   GET /api/events/my-events
-// @access  Private (Organizer)
+
+
+
 const getMyEvents = async (req, res) => {
     try {
         const events = await Event.find({ organizerId: req.user._id }).sort({ createdAt: -1 });
@@ -312,9 +312,9 @@ const getMyEvents = async (req, res) => {
     }
 };
 
-// @desc    Get event analytics summary for organizer
-// @route   GET /api/events/analytics-summary
-// @access  Private (Organizer)
+
+
+
 const getAnalyticsSummary = async (req, res) => {
     try {
         const events = await Event.find({ organizerId: req.user._id });

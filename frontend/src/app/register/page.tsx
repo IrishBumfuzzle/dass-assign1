@@ -45,12 +45,12 @@ export default function RegisterPage() {
             const res = await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/auth/register', {
                 ...formData,
                 captcha: captchaToken,
-                interests: [] // Can be added later in onboarding
+                interests: [] 
             });
 
             const { token, role, _id, name, email } = res.data;
 
-            // Store token and user info
+            
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify({ _id, name, email, role }));
 

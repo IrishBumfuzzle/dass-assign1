@@ -14,7 +14,7 @@ export default function BrowseEventsPage() {
     const [events, setEvents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Filters
+    
     const [keyword, setKeyword] = useState('');
     const [eventType, setEventType] = useState('All');
     const [sort, setSort] = useState('date');
@@ -24,7 +24,7 @@ export default function BrowseEventsPage() {
     const [showFollowed, setShowFollowed] = useState(false);
     const [followedIds, setFollowedIds] = useState<string[]>([]);
 
-    // Fetch user's followed organizers
+    
     useEffect(() => {
         const fetchFollowed = async () => {
             const token = localStorage.getItem('token');
@@ -34,7 +34,7 @@ export default function BrowseEventsPage() {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     setFollowedIds(res.data.followedOrganizers || []);
-                } catch (e) { /* ignore */ }
+                } catch (e) {  }
             }
         };
         fetchFollowed();
@@ -53,7 +53,7 @@ export default function BrowseEventsPage() {
                     query += `&followedClubs=${followedIds.join(',')}`;
                 }
 
-                // Pass userId for preference-based ordering
+                
                 const userStr = localStorage.getItem('user');
                 if (userStr) {
                     const user = JSON.parse(userStr);
@@ -71,7 +71,7 @@ export default function BrowseEventsPage() {
 
         const timer = setTimeout(() => {
             fetchEvents();
-        }, 300); // Debounce
+        }, 300); 
 
         return () => clearTimeout(timer);
     }, [keyword, eventType, sort, eligibility, startDate, endDate, showFollowed, followedIds]);
@@ -80,7 +80,7 @@ export default function BrowseEventsPage() {
         <React.Fragment>
             <Navbar />
             <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh', pb: 5 }}>
-                {/* Filter Section */}
+                {}
                 <Box sx={{ bgcolor: 'white', borderBottom: '1px solid #e2e8f0', py: 4, mb: 4 }}>
                     <Container maxWidth="lg">
                         <Typography variant="h4" fontWeight="bold" gutterBottom>Browse Events</Typography>
@@ -156,7 +156,7 @@ export default function BrowseEventsPage() {
                             </Grid>
                         </Grid>
 
-                        {/* Date Range Filter */}
+                        {}
                         <Grid container spacing={2} sx={{ mt: 1 }}>
                             <Grid item xs={6} md={3}>
                                 <TextField
@@ -251,7 +251,7 @@ export default function BrowseEventsPage() {
                                                     </Typography>
                                                 )}
 
-                                                {/* Tags */}
+                                                {}
                                                 <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                     {event.tags?.slice(0, 3).map((tag: string) => (
                                                         <Chip key={tag} label={tag} size="small" sx={{ fontSize: '0.7rem' }} />

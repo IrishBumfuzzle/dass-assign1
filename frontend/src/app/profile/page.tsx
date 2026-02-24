@@ -19,12 +19,12 @@ export default function ProfilePage() {
     const [saving, setSaving] = useState(false);
     const [msg, setMsg] = useState({ type: '', content: '' });
 
-    // Personal info
+    
     const [formData, setFormData] = useState({
         firstName: '', lastName: '', contactNumber: '', collegeOrOrgName: '', password: ''
     });
 
-    // Preferences
+    
     const [interests, setInterests] = useState<string[]>([]);
     const [followedOrganizers, setFollowedOrganizers] = useState<string[]>([]);
     const [allOrganizers, setAllOrganizers] = useState<any[]>([]);
@@ -48,7 +48,6 @@ export default function ProfilePage() {
                 setInterests(res.data.interests || []);
                 setFollowedOrganizers(res.data.followedOrganizers || []);
 
-                // Fetch all organizers for the follow list
                 const orgRes = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/organizers');
                 setAllOrganizers(orgRes.data);
             } catch (error) {
@@ -126,7 +125,7 @@ export default function ProfilePage() {
             <Container maxWidth="md" sx={{ py: 5 }}>
                 <Typography variant="h4" fontWeight="bold" sx={{ mb: 4 }}>My Profile</Typography>
 
-                {/* Non-editable info */}
+                {}
                 <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
                     <Chip label={`Email: ${user?.email}`} size="small" />
                     <Chip label={`Type: ${user?.type}`} size="small" color="info" />
@@ -191,7 +190,7 @@ export default function ProfilePage() {
                     </CardContent>
                 </Card>
 
-                {/* Followed Clubs */}
+                {}
                 <Card sx={{ p: 3 }}>
                     <CardContent>
                         <Typography variant="h6" fontWeight="bold" gutterBottom>Followed Clubs / Organizers</Typography>

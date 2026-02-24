@@ -10,14 +10,14 @@ export default function TeamsTab() {
     const [teams, setTeams] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Chat State
+    
     const [chatOpen, setChatOpen] = useState(false);
     const [selectedTeam, setSelectedTeam] = useState<any>(null);
     const [messages, setMessages] = useState<any[]>([]);
     const [messageInput, setMessageInput] = useState("");
     const [currentUser, setCurrentUser] = useState<any>(null);
 
-    // Online & Typing State
+    
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
     const [typingUsers, setTypingUsers] = useState<string[]>([]);
     const [fileBase64, setFileBase64] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export default function TeamsTab() {
 
         socket.on("receiveMessage", (message) => {
             setMessages((prev) => [...prev, message]);
-            setTypingUsers([]); // Reset typing on message received
+            setTypingUsers([]); 
         });
 
         socket.on("updateOnlineUsers", (users) => {
@@ -173,7 +173,7 @@ export default function TeamsTab() {
                 ))}
             </Grid>
 
-            {/* Chat Dialog */}
+            {}
             <Dialog open={chatOpen} onClose={() => setChatOpen(false)} fullWidth maxWidth="sm">
                 <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     Team Chat: {selectedTeam?.teamName}

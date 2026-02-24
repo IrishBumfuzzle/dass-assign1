@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-// Create a transporter - uses Ethereal for dev, configure real SMTP for production
+
 let transporter;
 
 const getTransporter = async () => {

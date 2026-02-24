@@ -19,7 +19,7 @@ const PasswordResetRequestSchema = new mongoose.Schema({
         type: String,
     },
     newPassword: {
-        type: String, // Temporarily store the generated password so admin can see it, or auto-email it.
+        type: String, 
     },
     createdAt: {
         type: Date,

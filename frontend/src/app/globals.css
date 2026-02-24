@@ -58,7 +58,6 @@ button {
     font-family: inherit;
 }
 
-/* Custom Utilities */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -106,14 +105,12 @@ button {
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* Glassmorphism */
 .glass {
     background: rgba(30, 41, 59, 0.7);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Animations */
 @keyframes float {
     0% {
         transform: translateY(0px);
@@ -141,7 +138,6 @@ button {
     animation: fadeIn 1s ease-out forwards;
 }
 
-/* Utilities */
 .text-primary {
     color: var(--color-primary);
 }
@@ -195,7 +191,6 @@ button {
     transition: all 0.3s ease;
 }
 
-/* Feature Card */
 .feature-card {
     padding: 2rem;
     border-radius: 16px;

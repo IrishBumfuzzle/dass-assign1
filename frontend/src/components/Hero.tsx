@@ -16,7 +16,7 @@ const Hero = () => {
                 textAlign: "center",
             }}
         >
-            {/* Background Animations */}
+            {}
             <div
                 className="absolute-bg"
                 style={{
@@ -86,7 +86,7 @@ const Hero = () => {
                     <button className="btn-secondary">View Demo</button>
                 </div>
 
-                {/* Dashboard Mockup */}
+                {}
                 <div
                     style={{
                         position: "relative",
@@ -102,7 +102,7 @@ const Hero = () => {
                         transformOrigin: "top center",
                     }}
                 >
-                    {/* Mock Header */}
+                    {}
                     <div
                         style={{
                             display: "flex",
@@ -147,7 +147,7 @@ const Hero = () => {
                         ></div>
                     </div>
 
-                    {/* Mock Content Layout */}
+                    {}
                     <div
                         style={{
                             display: "grid",
@@ -156,7 +156,7 @@ const Hero = () => {
                             height: "400px",
                         }}
                     >
-                        {/* Sidebar */}
+                        {}
                         <div
                             style={{
                                 background: "rgba(255, 255, 255, 0.02)",
@@ -178,7 +178,7 @@ const Hero = () => {
                             ))}
                         </div>
 
-                        {/* Main Content */}
+                        {}
                         <div
                             style={{
                                 display: "grid",
@@ -186,7 +186,7 @@ const Hero = () => {
                                 gap: "1rem",
                             }}
                         >
-                            {/* Stats */}
+                            {}
                             <div
                                 style={{
                                     display: "grid",
@@ -206,7 +206,7 @@ const Hero = () => {
                                     ></div>
                                 ))}
                             </div>
-                            {/* Chart Area */}
+                            {}
                             <div
                                 style={{
                                     background: "rgba(255, 255, 255, 0.02)",

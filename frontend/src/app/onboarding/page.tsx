@@ -56,13 +56,13 @@ export default function OnboardingPage() {
         const token = localStorage.getItem('token');
         try {
             if (!skip) {
-                // Save interests
+                
                 if (selectedInterests.length > 0) {
                     await axios.put((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', { interests: selectedInterests }, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                 }
-                // Follow selected organizers
+                
                 for (const orgId of selectedOrganizers) {
                     await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/follow/${orgId}`, {}, {
                         headers: { Authorization: `Bearer ${token}` }
@@ -88,7 +88,7 @@ export default function OnboardingPage() {
                         </Typography>
                     </Box>
 
-                    {/* Interests Section */}
+                    {}
                     <Typography variant="h6" fontWeight="bold" gutterBottom>
                         Areas of Interest
                     </Typography>
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
 
                     <Divider sx={{ my: 3 }} />
 
-                    {/* Follow Organizers Section */}
+                    {}
                     <Typography variant="h6" fontWeight="bold" gutterBottom>
                         Clubs / Organizers to Follow
                     </Typography>

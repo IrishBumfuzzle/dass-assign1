@@ -39,7 +39,7 @@ const TicketSchema = new mongoose.Schema({
     transactionId: { type: String },
     attended: { type: Boolean, default: false },
     attendedAt: { type: Date },
-    qrCodeData: { type: String }, // Base64 QR code image
+    qrCodeData: { type: String }, 
 });
 
 module.exports = mongoose.model("Ticket", TicketSchema);

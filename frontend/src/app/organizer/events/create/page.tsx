@@ -28,7 +28,7 @@ export default function CreateEvent() {
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    // Form State
+    
     const [basicInfo, setBasicInfo] = useState({
         name: '', description: '', eventType: 'Normal',
         startDate: '', endDate: '', deadline: '',
@@ -40,7 +40,7 @@ export default function CreateEvent() {
     const [merchDetails, setMerchDetails] = useState({ sizes: '', colors: '', stock: '', imageUrl: '', purchaseLimitPerParticipant: '1' });
 
     const handleNext = () => {
-        if (activeStep === steps.length - 1) return; // Don't auto-submit
+        if (activeStep === steps.length - 1) return; 
         setActiveStep((prev) => prev + 1);
     };
 
@@ -126,7 +126,7 @@ export default function CreateEvent() {
                 </Stepper>
 
                 <Paper sx={{ p: 4 }}>
-                    {/* Step 1: Basic Info */}
+                    {}
                     {activeStep === 0 && (
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
@@ -166,7 +166,7 @@ export default function CreateEvent() {
                         </Grid>
                     )}
 
-                    {/* Step 2: Specific Config */}
+                    {}
                     {activeStep === 1 && (
                         <Box>
                             {basicInfo.eventType === 'Normal' ? (
@@ -253,7 +253,7 @@ export default function CreateEvent() {
                         </Box>
                     )}
 
-                    {/* Step 3: Review & Publish */}
+                    {}
                     {activeStep === 2 && (
                         <Box>
                             <Typography variant="h6" gutterBottom>Review Event</Typography>

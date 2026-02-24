@@ -9,19 +9,19 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "*", // Or specific frontend URL
+        origin: "*", 
         methods: ["GET", "POST"],
     },
 });
 
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: "50mb" })); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true, limit: "50mb" })); // Parse URL-encoded bodies
 
-// Database Connection
+app.use(cors());
+app.use(express.json({ limit: "50mb" })); 
+app.use(express.urlencoded({ extended: true, limit: "50mb" })); 
+
+
 const promptConnection = async () => {
     try {
         const conn = await mongoose.connect(
@@ -36,7 +36,7 @@ const promptConnection = async () => {
 
 promptConnection();
 
-// Basic Route
+
 app.get("/", (req, res) => {
     res.send("Felicity event manager API is running...");
 });
@@ -56,7 +56,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
 const Message = require("./models/Message");
 
-// Socket.io for Team Chat
+
 const onlineUsers = new Map();
 
 io.on("connection", (socket) => {
@@ -84,20 +84,20 @@ io.on("connection", (socket) => {
         try {
             const { teamId, senderId, senderName, text, fileUrl } = data;
 
-            // Save to DB (Assuming Message schema is updated for fileUrl if you want to persist)
-            const message = await Message.create({
+
+                        const message = await Message.create({
                 teamId,
                 senderId,
                 senderName,
                 text,
             });
 
-            // If we have a fileUrl (not in original schema, but attaching to object for live transmission)
-            const transmitMsg = message.toObject();
+
+                        const transmitMsg = message.toObject();
             if (fileUrl) transmitMsg.fileUrl = fileUrl;
 
-            // Emit to everyone in the room (including sender)
-            io.to(teamId).emit("receiveMessage", transmitMsg);
+
+                        io.to(teamId).emit("receiveMessage", transmitMsg);
         } catch (error) {
             console.error("Error sending message:", error);
         }

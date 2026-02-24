@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const QRCode = require("qrcode");
 const { sendTicketEmail, sendMerchandiseConfirmationEmail } = require("../utils/email");
 
-// Generate QR code as data URL
+
 const generateQR = async (data) => {
     try {
         const url = await QRCode.toDataURL(JSON.stringify(data), { width: 250, margin: 2 });
@@ -16,9 +16,9 @@ const generateQR = async (data) => {
     }
 };
 
-// @desc    Register for an event (Participant only)
-// @route   POST /api/tickets
-// @access  Private (Participant)
+
+
+
 const registerForEvent = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -27,8 +27,8 @@ const registerForEvent = async (req, res) => {
         const { eventId, formData, merchandiseSelection, paymentProofUrl } = req.body;
         const participantId = req.user._id;
 
-        // 1. Check if Event exists and is Published/Ongoing
-        const event = await Event.findById(eventId).session(session);
+
+                const event = await Event.findById(eventId).session(session);
         if (!event) {
             await session.abortTransaction();
             session.endSession();
@@ -41,15 +41,15 @@ const registerForEvent = async (req, res) => {
             return res.status(400).json({ message: "Event is not open for registration" });
         }
 
-        // 2. Check deadline
-        if (event.deadline && new Date(event.deadline) < new Date()) {
+
+                if (event.deadline && new Date(event.deadline) < new Date()) {
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json({ message: "Registration deadline has passed" });
         }
 
-        // 3. Check for existing registration
-        const existingTicket = await Ticket.findOne({
+
+                const existingTicket = await Ticket.findOne({
             participantId,
             eventId,
             status: { $nin: ["Cancelled", "Rejected"] },
@@ -60,8 +60,8 @@ const registerForEvent = async (req, res) => {
             return res.status(400).json({ message: "You are already registered for this event" });
         }
 
-        // 4. Handle Normal Event Constraints
-        if (event.eventType === "Normal") {
+
+                if (event.eventType === "Normal") {
             if (event.registrationLimit > 0) {
                 const registrationCount = await Ticket.countDocuments({
                     eventId,
@@ -74,16 +74,16 @@ const registerForEvent = async (req, res) => {
                 }
             }
 
-            // Lock form after first registration
-            const normalEvent = await NormalEvent.findById(eventId).session(session);
+
+                        const normalEvent = await NormalEvent.findById(eventId).session(session);
             if (normalEvent && !normalEvent.formLocked) {
                 normalEvent.formLocked = true;
                 await normalEvent.save({ session });
             }
         }
 
-        // 5. Handle Merchandise Event Constraints
-        if (event.eventType === "Merchandise") {
+
+                if (event.eventType === "Merchandise") {
             const merchEvent = await MerchandiseEvent.findById(eventId).session(session);
             if (merchEvent.merchandiseDetails && merchEvent.merchandiseDetails.stock !== undefined) {
                 if (merchEvent.merchandiseDetails.stock <= 0) {
@@ -102,8 +102,8 @@ const registerForEvent = async (req, res) => {
             paymentStat = "Pending";
         }
 
-        // 6. Create Ticket
-        const ticket = await Ticket.create(
+
+                const ticket = await Ticket.create(
             [
                 {
                     participantId,
@@ -120,8 +120,8 @@ const registerForEvent = async (req, res) => {
 
         const createdTicket = ticket[0];
 
-        // 7. Generate QR Code for normal events (Merchandise gets QR on approval)
-        if (event.eventType === "Normal") {
+
+                if (event.eventType === "Normal") {
             const qrData = {
                 ticketId: createdTicket._id.toString(),
                 eventId: event._id.toString(),
@@ -132,8 +132,8 @@ const registerForEvent = async (req, res) => {
             createdTicket.qrCodeData = qrCodeData;
             await createdTicket.save({ session });
 
-            // 8. Send email for Normal events
-            const participant = await User.findById(participantId).session(session);
+
+                        const participant = await User.findById(participantId).session(session);
             if (participant) {
                 const pName = participant.firstName
                     ? `${participant.firstName} ${participant.lastName}`
@@ -160,9 +160,9 @@ const registerForEvent = async (req, res) => {
     }
 };
 
-// @desc    Get my tickets
-// @route   GET /api/tickets/my-tickets
-// @access  Private (Participant)
+
+
+
 const getMyTickets = async (req, res) => {
     try {
         const tickets = await Ticket.find({ participantId: req.user._id })
@@ -180,9 +180,9 @@ const getMyTickets = async (req, res) => {
     }
 };
 
-// @desc    Get tickets for an event (Organizer only)
-// @route   GET /api/tickets/event/:eventId
-// @access  Private (Organizer)
+
+
+
 const getEventTickets = async (req, res) => {
     try {
         const { eventId } = req.params;
@@ -202,8 +202,8 @@ const getEventTickets = async (req, res) => {
             .populate("teamId", "teamName")
             .sort({ registrationDate: -1 });
 
-        // Search/filter by participant name or email
-        if (search) {
+
+                if (search) {
             const searchLower = search.toLowerCase();
             tickets = tickets.filter((t) => {
                 const p = t.participantId;
@@ -216,8 +216,8 @@ const getEventTickets = async (req, res) => {
             });
         }
 
-        // Compute analytics
-        const totalRegistrations = tickets.filter(
+
+                const totalRegistrations = tickets.filter(
             (t) => t.status !== "Cancelled" && t.status !== "Rejected",
         ).length;
         const totalAttendance = tickets.filter((t) => t.attended).length;
@@ -243,14 +243,14 @@ const getEventTickets = async (req, res) => {
     }
 };
 
-// @desc    Resolve Merchandise Payment (Organizer)
-// @route   PUT /api/tickets/:id/resolve-payment
-// @access  Private (Organizer)
+
+
+
 const resolvePayment = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-        const { status } = req.body; // "Approved" or "Rejected"
+        const { status } = req.body; 
         const ticketId = req.params.id;
 
         const ticket = await Ticket.findById(ticketId)
@@ -273,8 +273,8 @@ const resolvePayment = async (req, res) => {
             ticket.paymentStatus = "Approved";
             ticket.status = "Registered";
 
-            // Decrement Stock
-            const merchEvent = await MerchandiseEvent.findById(ticket.eventId._id).session(session);
+
+                        const merchEvent = await MerchandiseEvent.findById(ticket.eventId._id).session(session);
             if (merchEvent.merchandiseDetails) {
                 if (merchEvent.merchandiseDetails.stock <= 0) {
                     await session.abortTransaction();
@@ -285,8 +285,8 @@ const resolvePayment = async (req, res) => {
                 await merchEvent.save({ session });
             }
 
-            // Generate QR Code on approval
-            const qrData = {
+
+                        const qrData = {
                 ticketId: ticket._id.toString(),
                 eventId: ticket.eventId._id.toString(),
                 eventName: ticket.eventId.name,
@@ -295,8 +295,8 @@ const resolvePayment = async (req, res) => {
             const qrCodeData = await generateQR(qrData);
             ticket.qrCodeData = qrCodeData;
 
-            // Send confirmation email
-            if (ticket.participantId) {
+
+                        if (ticket.participantId) {
                 const pName = `${ticket.participantId.firstName} ${ticket.participantId.lastName}`;
                 sendMerchandiseConfirmationEmail(
                     ticket.participantId.email,

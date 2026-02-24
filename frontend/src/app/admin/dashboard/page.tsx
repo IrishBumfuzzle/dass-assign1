@@ -31,16 +31,16 @@ export default function AdminDashboard() {
     const [passwordResets, setPasswordResets] = useState<any[]>([]);
     const [openDialog, setOpenDialog] = useState(false);
 
-    // Generated credentials display
+    
     const [createdCredentials, setCreatedCredentials] = useState<{ email: string; password: string } | null>(null);
 
-    // Resolve Dialog State
+    
     const [resolveDialog, setResolveDialog] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState<any>(null);
     const [adminComment, setAdminComment] = useState('');
     const [generatedPassword, setGeneratedPassword] = useState('');
 
-    // Form State
+    
     const [newOrg, setNewOrg] = useState({
         organizerName: '', email: '', password: '',
         contactEmail: '', discordWebhookUrl: '', category: '', description: ''
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
             const res = await axios.post((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/admin/organizers', newOrg, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            // Show generated credentials
+            
             setCreatedCredentials({
                 email: res.data.email,
                 password: res.data.generatedPassword,
@@ -225,7 +225,7 @@ export default function AdminDashboard() {
                 </CustomTabPanel>
             </Container>
 
-            {/* Create Dialog */}
+            {}
             <Dialog open={openDialog} onClose={() => { setOpenDialog(false); setCreatedCredentials(null); }} fullWidth maxWidth="sm">
                 <DialogTitle>Add New Organizer</DialogTitle>
                 <DialogContent>
@@ -294,7 +294,7 @@ export default function AdminDashboard() {
                 </DialogActions>
             </Dialog>
 
-            {/* Resolve Dialog */}
+            {}
             <Dialog open={resolveDialog} onClose={() => { setResolveDialog(false); setGeneratedPassword(''); }} fullWidth maxWidth="sm">
                 <DialogTitle>Resolve Password Reset</DialogTitle>
                 <DialogContent>

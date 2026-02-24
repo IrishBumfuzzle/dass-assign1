@@ -16,8 +16,8 @@ const updateUserProfile = async (req, res) => {
         const user = await User.findById(req.user._id);
 
         if (user) {
-            // Participant-specific
-            if (user.role === "Participant") {
+
+                        if (user.role === "Participant") {
                 user.firstName = req.body.firstName || user.firstName;
                 user.lastName = req.body.lastName || user.lastName;
                 user.contactNumber = req.body.contactNumber || user.contactNumber;
@@ -66,9 +66,9 @@ const getOrganizers = async (req, res) => {
     }
 };
 
-// @desc    Get Organizer Details by ID
-// @route   GET /api/users/organizers/:id
-// @access  Public
+
+
+
 const getOrganizerById = async (req, res) => {
     try {
         const organizer = await Organizer.findById(req.params.id).select("-password");
@@ -83,9 +83,9 @@ const getOrganizerById = async (req, res) => {
     }
 };
 
-// @desc    Follow Organizer
-// @route   PUT /api/users/follow/:organizerId
-// @access  Private (Participant)
+
+
+
 const followOrganizer = async (req, res) => {
     try {
         const participant = await Participant.findById(req.user._id);
@@ -105,9 +105,9 @@ const followOrganizer = async (req, res) => {
     }
 };
 
-// @desc    Unfollow Organizer
-// @route   PUT /api/users/unfollow/:organizerId
-// @access  Private (Participant)
+
+
+
 const unfollowOrganizer = async (req, res) => {
     try {
         const participant = await Participant.findById(req.user._id);

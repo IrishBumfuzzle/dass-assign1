@@ -12,8 +12,8 @@ const generateToken = (id) => {
 
 const verifyCaptcha = async (token) => {
     if (!token) return false;
-    // Test secret key for reCAPTCHA - works with the test site key
-    const secret = process.env.RECAPTCHA_SECRET_KEY || "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
+
+        const secret = process.env.RECAPTCHA_SECRET_KEY || "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
     try {
         const response = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`,

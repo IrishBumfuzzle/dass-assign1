@@ -12,7 +12,7 @@ export default function OrganizersListPage() {
     const router = useRouter();
     const [organizers, setOrganizers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [followed, setFollowed] = useState<string[]>([]); // simplified tracking
+    const [followed, setFollowed] = useState<string[]>([]); 
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,7 +20,7 @@ export default function OrganizersListPage() {
                 const res = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/organizers');
                 setOrganizers(res.data);
 
-                // If logged in, fetch current profile to see followed
+                
                 const token = localStorage.getItem('token');
                 if (token) {
                     const profileRes = await axios.get((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/users/profile', {
@@ -44,7 +44,7 @@ export default function OrganizersListPage() {
             return;
         }
 
-        try { // Optimistic update
+        try { 
             const isFollowing = followed.includes(id);
             setFollowed(prev => isFollowing ? prev.filter(fid => fid !== id) : [...prev, id]);
 

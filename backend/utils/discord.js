@@ -8,7 +8,7 @@ const sendEventNotification = async (webhookUrl, eventData) => {
             embeds: [
                 {
                     title: "New Event Published! 🎉",
-                    color: 5814783, // Blue-ish
+                    color: 5814783, 
                     fields: [
                         { name: "Event Name", value: eventData.name },
                         { name: "Date", value: new Date(eventData.startDate).toDateString() },

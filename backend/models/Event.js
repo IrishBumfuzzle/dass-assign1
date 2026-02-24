@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const options = { discriminatorKey: "eventType", collection: "events" };
 
-// Base Event Schema
+
 const EventSchema = new mongoose.Schema(
     {
         name: {
@@ -30,7 +30,7 @@ const EventSchema = new mongoose.Schema(
             required: true,
         },
         tags: [{ type: String }],
-        eligibility: { type: String }, // e.g., "All", "IIIT Only"
+        eligibility: { type: String }, 
         registrationLimit: { type: Number },
         fee: { type: Number, default: 0 },
         deadline: { type: Date },
@@ -43,7 +43,7 @@ const EventSchema = new mongoose.Schema(
 
 const Event = mongoose.model("Event", EventSchema);
 
-// Normal Event Schema (Custom Form Fields)
+
 const NormalEventSchema = new mongoose.Schema({
     customFormFields: [
         {
@@ -53,17 +53,17 @@ const NormalEventSchema = new mongoose.Schema({
                 enum: ["text", "number", "email", "dropdown", "checkbox", "file"],
                 required: true,
             },
-            options: [{ type: String }], // For dropdowns
+            options: [{ type: String }], 
             required: { type: Boolean, default: false },
             order: { type: Number, default: 0 },
         },
     ],
-    formLocked: { type: Boolean, default: false }, // Lock after first registration
+    formLocked: { type: Boolean, default: false }, 
     isTeamEvent: { type: Boolean, default: false },
     maxTeamSize: { type: Number, default: 1 },
 });
 
-// Merchandise Event Schema (Item Details)
+
 const MerchandiseEventSchema = new mongoose.Schema({
     merchandiseDetails: {
         sizes: [{ type: String }],

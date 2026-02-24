@@ -13,9 +13,9 @@ import { Event } from '../../../types';
 import { useParams, useRouter } from 'next/navigation';
 
 export default function EventDetailsPage() {
-    const params = useParams(); // Use useParams hook
+    const params = useParams(); 
     const router = useRouter();
-    const id = params?.id as string; // Access id from params
+    const id = params?.id as string; 
 
     const [event, setEvent] = useState<Event | null>(null);
     const [loading, setLoading] = useState(true);
@@ -23,12 +23,12 @@ export default function EventDetailsPage() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    // Team States
+    
     const [teamMode, setTeamMode] = useState<'create' | 'join'>('create');
     const [teamName, setTeamName] = useState('');
     const [inviteCode, setInviteCode] = useState('');
 
-    // Form States
+    
     const [formData, setFormData] = useState<Record<string, string>>({});
     const [merchSelection, setMerchSelection] = useState({ size: '', color: '' });
     const [paymentProofBase64, setPaymentProofBase64] = useState<string | null>(null);
@@ -91,7 +91,7 @@ export default function EventDetailsPage() {
             }
 
             setSuccess("Successfully registered!");
-            setTimeout(() => router.push('/dashboard'), 2000); // Redirect after success
+            setTimeout(() => router.push('/dashboard'), 2000); 
         } catch (err: any) {
             setError(err.response?.data?.message || "Registration failed.");
         } finally {
@@ -110,7 +110,7 @@ export default function EventDetailsPage() {
         <React.Fragment>
             <Navbar />
             <Box sx={{ bgcolor: '#fff', minHeight: '100vh', pb: 8 }}>
-                {/* Hero Section */}
+                {}
                 <Box sx={{
                     bgcolor: '#1e293b',
                     color: 'white',
@@ -133,7 +133,7 @@ export default function EventDetailsPage() {
 
                 <Container maxWidth="md" sx={{ mt: -4 }}>
                     <Box sx={{ bgcolor: 'white', borderRadius: 2, boxShadow: 3, p: 4 }}>
-                        {/* Status Messages */}
+                        {}
                         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
                         {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
 
@@ -167,7 +167,7 @@ export default function EventDetailsPage() {
                                 </Grid>
                             </Grid>
 
-                            {/* Registration / Action Column */}
+                            {}
                             <Grid item xs={12} md={4}>
                                 <Box sx={{ bgcolor: '#f9fafb', p: 3, borderRadius: 2, border: '1px solid #e5e7eb' }}>
                                     <Typography variant="h6" gutterBottom fontWeight="bold">Register</Typography>
